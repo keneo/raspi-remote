@@ -23,11 +23,11 @@ function onIdle() {
   robot.setMotor("right",0);
 }
 
-var idleTimeout = setTimeout(onIdle, 1000)
+var idleTimeout = setTimeout(onIdle, 250)
 
 function resetIdleTimeout() {
     clearTimeout(idleTimeout);
-    idleTimeout = setTimeout(onIdle, 1000);
+    idleTimeout = setTimeout(onIdle, 250);
 }
 
 var keyToFun = {
