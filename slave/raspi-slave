@@ -2,9 +2,11 @@
 
 while true
 do
-	mv raspi-slave.js raspi-slave.js.prev ; \
-		wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
-		sudo nodejs raspi-slave.js
+	#mv raspi-slave.js raspi-slave.js.prev ; \
+	#	wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
+
+	git pull
+	sudo nodejs raspi-slave.js
 
 	code=$?
 
