@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/keneo/raspi-remote/issues"
   },
-  "homepage": "https://github.com/keneo/raspi-remote#readme"
+  "homepage": "https://github.com/keneo/raspi-remote#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
 }
