@@ -1,0 +1,29 @@
+while true
+do
+	#mv raspi-slave.js raspi-slave.js.prev ; \
+	#wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
+	sudo nodejs raspi-slave.js
+		
+
+	code=$?
+
+	if [ $code -eq 10 ]
+	then 
+		echo reboot; 
+		reboot
+	elif [ $code -eq 20 ]
+	then 
+		echo "kill-exit";
+		exit
+	elif [ $code -eq 0 ]
+	then 
+		echo "update-nothing";
+	else
+		echo "unknown exit code-sleep 1m";
+		sleep 60
+	fi
+
+	echo "Restart in 1 sec"
+
+	sleep 1
+done
