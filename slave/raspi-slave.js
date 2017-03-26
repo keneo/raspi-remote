@@ -1,13 +1,9 @@
-// Load the TCP Library
 net = require('net');
 
-// test commit
-
-// Keep track of the chat clients
 var clients = [];
 
-var RaspiRobot = require("./raspirobot.js").RaspiRobot, // Import the library
-    robot = new RaspiRobot();
+var RaspiRobot = require("./raspirobot.js").RaspiRobot
+var robot = new RaspiRobot();
 
 robot.setup(); // Set up GPIO ports
 
@@ -36,7 +32,7 @@ var keyToFun = {
     "u": ["update",function() { myexit(0); }],
     "r": ["restart",function() { myexit(10); }],
     "k": ["kill",function() { myexit(20); }],
-    
+
     "o": ["led1 switch",function() { robot.setLED(1,(robot.getLED(1)?0:1)); }],
     "p": ["led2 switch",function() { robot.setLED(2,(robot.getLED(2)?0:1)); }],
     "w": ["forward",function() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",1); }],
@@ -48,8 +44,8 @@ var keyToFun = {
 
 function myexit(code) {
     clearTimeout(idleTimeout);
-    robot.setLED(1, 1); 
-    robot.setLED(2, 1); 
+    robot.setLED(1, 1);
+    robot.setLED(2, 1);
     broadcast("Server closing in 1 sec. Code: "+code);
     setTimeout(function(){process.exit(code);}, 1000);
 }
@@ -69,7 +65,7 @@ function broadcast(message, sender) {
 net.createServer(function (socket) {
 
   // Identify this client
-  socket.name = socket.remoteAddress + ":" + socket.remotePort 
+  socket.name = socket.remoteAddress + ":" + socket.remotePort
 
   // Put this new client in the list
   clients.push(socket);
@@ -88,7 +84,7 @@ net.createServer(function (socket) {
         broadcast(socket.name + "> " + action[0], socket);
         (action[1])();
     }
-    
+
   });
 
   // Remove the client from the list when it leaves
@@ -96,7 +92,7 @@ net.createServer(function (socket) {
     clients.splice(clients.indexOf(socket), 1);
     broadcast(socket.name + " left the chat.");
   });
-  
+
 
 
 }).listen(5000);

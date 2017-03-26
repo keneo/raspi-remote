@@ -1,22 +1,23 @@
+#!/bin/bash
+
 while true
 do
-	#mv raspi-slave.js raspi-slave.js.prev ; \
-	#wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
-	sudo nodejs raspi-slave.js
-		
+	mv raspi-slave.js raspi-slave.js.prev ; \
+		wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
+		sudo nodejs raspi-slave.js
 
 	code=$?
 
 	if [ $code -eq 10 ]
-	then 
-		echo reboot; 
+	then
+		echo reboot;
 		reboot
 	elif [ $code -eq 20 ]
-	then 
+	then
 		echo "kill-exit";
 		exit
 	elif [ $code -eq 0 ]
-	then 
+	then
 		echo "update-nothing";
 	else
 		echo "unknown exit code-sleep 1m";
