@@ -1,0 +1,19 @@
+{
+  "name": "slave",
+  "version": "1.0.0",
+  "description": "",
+  "main": "raspi-slave.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keneo/raspi-remote.git"
+  },
+  "author": "bartek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keneo/raspi-remote/issues"
+  },
+  "homepage": "https://github.com/keneo/raspi-remote#readme"
+}
