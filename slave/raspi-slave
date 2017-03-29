@@ -6,7 +6,7 @@ do
 	#	wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
 
 	git pull
-	sudo nodejs raspi-slave.js
+	sudo node raspi-slave.js
 
 	code=$?
 
