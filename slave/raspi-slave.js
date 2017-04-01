@@ -10,17 +10,17 @@ var MyRobot = require("./myrobot.js")
 myrobot.setup(); // Set up GPIO ports
 
 var keyToFun = {
-    "u": ["update",myrobot.update],
-    "r": ["restart",myrobot.restart],
-    "k": ["kill",myrobot.kill],
+    "u": "update",
+    "r": "restart",
+    "k": "kill",
 
-    "o": ["led1 switch",myrobot.led1_switch],
-    "p": ["led2 switch",myrobot.led2_switch],
-    "w": ["forward",myrobot.forward],
-    "s": ["backwards",myrobot.backwards],
-    " ": ["stop",myrobot.stop],
-    "a": ["left",myrobot.left],
-    "d": ["right",myrobot.right]
+    "o": "led1_switch",
+    "p": "led2_switch",
+    "w": "forward",
+    "s": "backwards",
+    " ": "stop",
+    "a": "left",
+    "d": "right"
 }
 
 net.createServer(function (socket) {
@@ -34,8 +34,8 @@ net.createServer(function (socket) {
     if (action==undefined){
       broadcast(socket.name + "> " + data + " <- unknown command", socket);
     } else {
-        broadcast(socket.name + "> " + action[0], socket);
-        (action[1])();
+      broadcast(socket.name + "> " + action, socket);
+      (myrobot[action])();
     }
   });
   socket.on('end', function () {
@@ -44,7 +44,6 @@ net.createServer(function (socket) {
   });
 }).listen(5000);
 
-// Put a friendly message on the terminal of the server.
 console.log("Telnet server running at port 5000, v2\n");
 
 var express = require('express')
@@ -61,7 +60,7 @@ app.get('/', function (req, res) {
 app.ws('/socket', function(ws, req) {
   broadcast("web socket created. req: "+req);
   ws.on('message', function(msg) {
-    //ws.send(msg);
+
     broadcast("message received on web socket: "+msg);
 
     var d = JSON.parse(msg);
@@ -78,18 +77,18 @@ app.listen(2000, function () {
 })
 
 function broadcast(message, sender) {
-    clients.forEach(function (client) {
-      // Don't want to send it to sender
-      if (client === sender) return;
-      client.write(message+"\r\n");
-    });
+  clients.forEach(function (client) {
+    // Don't want to send it to sender
+    if (client === sender) return;
+    client.write(message+"\r\n");
+  });
 
-    aWss.clients.forEach(function (client) {
-      client.send(message);
-    });
+  aWss.clients.forEach(function (client) {
+    client.send(message);
+  });
 
-    // Log it to the server output too
-    process.stdout.write(message+"\n");
+  // Log it to the server output too
+  process.stdout.write(message+"\n");
 }
 
 myrobot.on('message',broadcast);
