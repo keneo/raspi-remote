@@ -5,6 +5,7 @@ module.exports = MyRobot;
 
 function MyRobot() {
   EventEmitter.call(this);
+  const that = this;
   this.setup=setup;
   //this.ledBusy=ledBusy;
 
@@ -29,8 +30,8 @@ function MyRobot() {
   }
 
   function broadcast(message) {
-      process.stdout.write(message+"\n");
-      //this.emit('message', message);
+      //process.stdout.write(message+"\n");
+      that.emit('message', message);
   }
 }
 
@@ -83,24 +84,24 @@ function left() { ledBusy(); robot.setMotor("left",0); robot.setMotor("right",1)
 function right() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",0); resheduleStop(); }
 
 function setDirection(d) { //x,y
-    if (d.x==0){
-      //prosto
-      if (d.y==0) {
-        motorStop();
-      } else {
-        var reverse = d.y>0?0:1;
-        ledBusy(); robot.setMotor("left",1,reverse); robot.setMotor("right",1,reverse);
-      }
+  if (d.x==0){
+    //prosto
+    if (d.y==0) {
+      motorStop();
     } else {
-      //skrecamy
-      ledBusy();
-      if (d.y==0) {
-        //w miejscu
-        robot.setMotor("left",1,d.x<0?1:0); robot.setMotor("right",1,d.x>0?1:0);
-      } else {
-        //w ruchu
-        var dir = d.y==1?0:1;
-        robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir);
-      }
+      var reverse = d.y>0?0:1;
+      ledBusy(); robot.setMotor("left",1,reverse); robot.setMotor("right",1,reverse);
     }
+  } else {
+    //skrecamy
+    ledBusy();
+    if (d.y==0) {
+      //w miejscu
+      robot.setMotor("left",1,d.x<0?1:0); robot.setMotor("right",1,d.x>0?1:0);
+    } else {
+      //w ruchu
+      var dir = d.y==1?0:1;
+      robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir);
+    }
+  }
 }
