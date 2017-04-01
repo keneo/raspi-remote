@@ -87,6 +87,7 @@ var app = express()
 var expressWs = require('express-ws')(app);
 var aWss = expressWs.getWss('/socket');
 
+app.use(express.static(__dirname + '/public'));
 app.get('/', function (req, res) {
   res.send('Hello World!')
 })
@@ -115,7 +116,7 @@ app.ws('/socket', function(ws, req) {
       } else {
         //w ruchu
         var dir = d.y==1?0:1;
-        robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir); 
+        robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir);
       }
     }
   });
