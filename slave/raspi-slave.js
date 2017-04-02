@@ -119,7 +119,7 @@ if (config.remoteMasterHostAndPort != null) {
           if (message.type === 'utf8') {
               broadcast("WSC Received: '" + message.utf8Data + "'");
 
-              const cmd = JSON.parse(msg);
+              const cmd = JSON.parse(message.utf8Data);
               const method = cmd[0];
               const arg = cmd[1];
               myrobot[method](arg);
