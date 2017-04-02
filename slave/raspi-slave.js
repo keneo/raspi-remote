@@ -145,6 +145,7 @@ if (config.remoteMasterHostAndPort != null) {
 }
 
 function broadcast(message, sender) {
+  process.stdout.write(message+"\n");
   clients.forEach(function (client) {
     // Don't want to send it to sender
     if (client === sender) return;
@@ -158,9 +159,6 @@ function broadcast(message, sender) {
   if (uplinkConnection!=null) {
     uplinkConnection.sendUTF(message);
   }
-
-  // Log it to the server output too
-  process.stdout.write(message+"\n");
 }
 
 myrobot.on('message',broadcast);
