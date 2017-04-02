@@ -91,8 +91,10 @@ app.ws('/slaveSocket', function(ws, req) {
   });
 });
 
-app.listen(2000, function () {
-  console.log('Web app listening on port 2000. http://127.0.0.1:2000/ !')
+const port = process.env.PORT || 2000;
+
+app.listen(port, function () {
+  console.log('Web app listening on port '+port+'. http://127.0.0.1:'+port+'/ !')
 })
 
 var uplinkConnection = null;
