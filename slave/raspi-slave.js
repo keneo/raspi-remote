@@ -58,11 +58,11 @@ app.use(express.static(__dirname + '/public'));
 const clientsOnWS = [];
 
 app.ws('/socket', function(ws, req) {
-  broadcast("client (web browser) connected on web socket. ws: "+JSON.stringify(ws));
+  broadcast("client (web browser) connected on web socket.");
   clientsOnWS.push(ws);
   ws.on('message', function(msg) {
 
-    broadcast("message received on web socket: "+msg);
+    broadcast("message received from client (web browser): "+msg);
 
     const cmd = JSON.parse(msg);
     const method = cmd[0];
@@ -80,7 +80,7 @@ const slaves = [];
 
 app.ws('/slaveSocket', function(ws, req) {
   slaves.push(ws);
-  broadcast("Slave has connected. req: "+ JSON.stringify(req));
+  broadcast("Slave has connected.");
   ws.on('message', function(msg) {
     broadcast("Slave WS> Message from slave: "+msg);
   });
