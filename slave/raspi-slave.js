@@ -1,27 +1,11 @@
-// Load the TCP Library
-net = require('net');
+const net = require('net');
 
-// Keep track of the chat clients
-var clients = [];
+const clients = [];
 
-var MyRobot = require("./myrobot.js")
-    myrobot = new MyRobot();
+const MyRobot = require("./myrobot.js"),
+      myrobot = new MyRobot();
 
-myrobot.setup(); // Set up GPIO ports
-
-var keyToFun = {
-    "u": "update",
-    "r": "restart",
-    "k": "kill",
-
-    "o": "led1_switch",
-    "p": "led2_switch",
-    "w": "forward",
-    "s": "backwards",
-    " ": "stop",
-    "a": "left",
-    "d": "right"
-}
+myrobot.setup();
 
 net.createServer(function (socket) {
   socket.name = socket.remoteAddress + ":" + socket.remotePort
@@ -29,10 +13,21 @@ net.createServer(function (socket) {
   socket.write("Welcome " + socket.name + "\r\n");
   broadcast(socket.name + " joined.", socket);
   socket.on('data', function (data) {
-    //console.log(JSON.stringify(data));
-    var action = keyToFun[data.toString().trim()[0]];
+    const keyToFun = {
+        "u": "update",
+        "r": "restart",
+        "k": "kill",
+        "o": "led1_switch",
+        "p": "led2_switch",
+        "w": "forward",
+        "s": "backwards",
+        " ": "stop",
+        "a": "left",
+        "d": "right"
+    }
+    const action = keyToFun[data.toString().trim()[0]];
     if (action==undefined){
-      broadcast(socket.name + "> " + data + " <- unknown command", socket);
+      broadcast(socket.name + "> " + data + " <- unknown command");
     } else {
       broadcast(socket.name + "> " + action, socket);
       (myrobot[action])();
@@ -46,11 +41,11 @@ net.createServer(function (socket) {
 
 console.log("Telnet server running at port 5000, v2\n");
 
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
 
-var expressWs = require('express-ws')(app);
-var aWss = expressWs.getWss('/socket');
+const expressWs = require('express-ws')(app);
+const aWss = expressWs.getWss('/socket');
 
 app.use(express.static(__dirname + '/public'));
 
