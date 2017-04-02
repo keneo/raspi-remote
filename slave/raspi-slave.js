@@ -1,6 +1,6 @@
 const net = require('net');
 
-const clients = [];
+const clientsOnTelnet = [];
 
 const MyRobot = require("./myrobot.js"),
       myrobot = new MyRobot();
@@ -15,7 +15,7 @@ function slavesExecute(action,args) {
 
 net.createServer(function (socket) {
   socket.name = socket.remoteAddress + ":" + socket.remotePort
-  clients.push(socket);
+  clientsOnTelnet.push(socket);
   socket.write("Welcome " + socket.name + "\r\n");
   broadcast(socket.name + " joined.", socket);
   socket.on('data', function (data) {
@@ -40,7 +40,7 @@ net.createServer(function (socket) {
     }
   });
   socket.on('end', function () {
-    clients.splice(clients.indexOf(socket), 1);
+    clientsOnTelnet.splice(clientsOnTelnet.indexOf(socket), 1);
     broadcast(socket.name + " left.");
   });
 }).listen(5000);
@@ -58,7 +58,7 @@ app.use(express.static(__dirname + '/public'));
 const clientsOnWS = [];
 
 app.ws('/socket', function(ws, req) {
-  broadcast("client connected on web socket. req: "+req);
+  broadcast("client (web browser) connected on web socket. ws: "+JSON.stringify(ws));
   clientsOnWS.push(ws);
   ws.on('message', function(msg) {
 
@@ -80,7 +80,7 @@ const slaves = [];
 
 app.ws('/slaveSocket', function(ws, req) {
   slaves.push(ws);
-  broadcast("Slave has connected. req: "+req);
+  broadcast("Slave has connected. req: "+ JSON.stringify(req));
   ws.on('message', function(msg) {
     broadcast("Slave WS> Message from slave: "+msg);
   });
@@ -152,7 +152,7 @@ if (config.remoteMasterHostAndPort != null) {
 
 function broadcast(message, sender) {
   process.stdout.write(message+"\n");
-  clients.forEach(function (client) {
+  clientsOnTelnet.forEach(function (client) {
     // Don't want to send it to sender
     if (client === sender) return;
     client.write(message+"\r\n");
