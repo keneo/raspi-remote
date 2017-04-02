@@ -95,6 +95,7 @@ var uplinkConnection = null;
 const config = require("./config.js");
 
 if (config.remoteMasterHostAndPort != null) {
+  const remoteHostAndPort = config.remoteMasterHostAndPort;
   const WebSocketClient = require('websocket').client;
   const client = new WebSocketClient();
 
@@ -129,7 +130,7 @@ if (config.remoteMasterHostAndPort != null) {
   });
 
   function wscReconnect() {
-    const socketUrl = 'ws://'+remoteMasterHostAndPort+'/slaveSocket';
+    const socketUrl = 'ws://'+remoteHostAndPort+'/slaveSocket';
     broadcast("WSC Connecting to remote master web socket: "+socketUrl+" ...");
     client.connect(socketUrl);
   }
