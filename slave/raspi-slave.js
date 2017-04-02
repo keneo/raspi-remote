@@ -129,6 +129,7 @@ if (config.remoteMasterHostAndPort != null) {
               myrobot[method](arg);
           } else {
             broadcast("WSC Unknown message type: "+message.type)
+            broadcast("WSC Full message dump: "+JSON.stringify(message))
           }
       });
   });
