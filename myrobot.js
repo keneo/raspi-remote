@@ -7,7 +7,7 @@ function MyRobot() {
   EventEmitter.call(this);
   const that = this;
   this.setup=setup;
-  //this.ledBusy=ledBusy;
+  //this.ledBusy=ledBusy; //
 
   this.update=(()=>{myexit(0);});
   this.restart=(()=>{myexit(10);});
