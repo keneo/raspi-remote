@@ -152,9 +152,9 @@ function broadcast(message, sender) {
     client.write(message+"\r\n");
   });
 
-  aWss.clients.forEach(function (client) {
-    client.send(message);
-  });
+//  aWss.clients.forEach(function (client) {
+//    client.send(message);
+//  });
 
   if (uplinkConnection!=null) {
     uplinkConnection.sendUTF(message);
