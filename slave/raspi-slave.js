@@ -7,6 +7,11 @@ const MyRobot = require("./myrobot.js"),
 
 myrobot.setup();
 
+function slavesExecute(action,args) {
+  slaves.forEach(slave=>{slave.send([action,args])});
+  (myrobot[action])(args);
+}
+
 net.createServer(function (socket) {
   socket.name = socket.remoteAddress + ":" + socket.remotePort
   clients.push(socket);
@@ -30,7 +35,7 @@ net.createServer(function (socket) {
       broadcast(socket.name + "> " + data + " <- unknown command");
     } else {
       broadcast(socket.name + "> " + action, socket);
-      (myrobot[action])();
+      slavesExecute(action,null);
     }
   });
   socket.on('end', function () {
@@ -50,7 +55,7 @@ const aWss = expressWs.getWss('/socket');
 app.use(express.static(__dirname + '/public'));
 
 app.ws('/socket', function(ws, req) {
-  broadcast("web socket created. req: "+req);
+  broadcast("client connected on web socket. req: "+req);
   ws.on('message', function(msg) {
 
     broadcast("message received on web socket: "+msg);
@@ -58,17 +63,85 @@ app.ws('/socket', function(ws, req) {
     const cmd = JSON.parse(msg);
     const method = cmd[0];
     const arg = cmd[1];
-    myrobot[method](arg);
+    slavesExecute(method,arg);
   });
   ws.on('close', function() {
     //ws.send(msg);
-    broadcast("web socket close event.");
+    broadcast("client connection closed.");
+  });
+});
+
+const slaves = [];
+
+app.ws('/slaveSocket', function(ws, req) {
+  slaves.push(ws);
+  broadcast("Slave has connected. req: "+req);
+  ws.on('message', function(msg) {
+    broadcast("Slave WS> Message from slave: "+msg);
+  });
+  ws.on('close', function() {
+    slaves.splice(slaves.indexOf(ws), 1);
+    //ws.send(msg);
+    broadcast("Slave disconnected: "+ws);
   });
 });
 
 app.listen(2000, function () {
   console.log('Web app listening on port 2000. http://127.0.0.1:2000/ !')
 })
+
+var uplinkConnection = null;
+
+const config = require("./config.js");
+
+if (config.remoteMasterHostAndPort != null) {
+  const WebSocketClient = require('websocket').client;
+  const client = new WebSocketClient();
+
+  client.on('connectFailed', function(error) {
+      broadcast('WSC Connect Error: ' + error.toString());
+      scheduleWSCReconnect();
+  });
+
+  client.on('connect', function(connection) {
+      broadcast('WSC WebSocket Client Connected');
+      connection.on('error', function(error) {
+          broadcast("WSC Connection Error: " + error.toString());
+          scheduleWSCReconnect();
+      });
+      connection.on('close', function() {
+          broadcast('WSC echo-protocol Connection Closed');
+          uplinkConnection = null;
+          scheduleWSCReconnect();
+      });
+      connection.on('message', function(message) {
+          if (message.type === 'utf8') {
+              broadcast("WSC Received: '" + message.utf8Data + "'");
+
+              const cmd = JSON.parse(msg);
+              const method = cmd[0];
+              const arg = cmd[1];
+              myrobot[method](arg);
+          } else {
+            broadcast("WSC Unknown message type: "+message.type)
+          }
+      });
+  });
+
+  function wscReconnect() {
+    const socketUrl = 'ws://'+remoteMasterHostAndPort+'/slaveSocket';
+    broadcast("WSC Connecting to remote master web socket: "+socketUrl+" ...");
+    client.connect(socketUrl);
+  }
+  var wscReconnectTimeout;
+  function scheduleWSCReconnect(){
+    broadcast("WSC Reconnect attempt in 5 secs...");
+    clearTimeout(wscReconnectTimeout)
+    wscReconnectTimeout=setTimeout(wscReconnect,5000);
+  }
+
+  wscReconnect();
+}
 
 function broadcast(message, sender) {
   clients.forEach(function (client) {
@@ -80,6 +153,10 @@ function broadcast(message, sender) {
   aWss.clients.forEach(function (client) {
     client.send(message);
   });
+
+  if (uplinkConnection!=null) {
+    uplinkConnection.sendUTF(message);
+  }
 
   // Log it to the server output too
   process.stdout.write(message+"\n");
