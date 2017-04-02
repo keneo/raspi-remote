@@ -8,7 +8,7 @@ const MyRobot = require("./myrobot.js"),
 myrobot.setup();
 
 function slavesExecute(action,args) {
-  slaves.forEach(slave=>{slave.send([action,args])});
+  slaves.forEach(slave=>{slave.send([action,args],{binary:false})});
   (myrobot[action])(args);
 }
 
