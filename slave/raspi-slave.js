@@ -50,12 +50,15 @@ const express = require('express')
 const app = express()
 
 const expressWs = require('express-ws')(app);
-const aWss = expressWs.getWss('/socket');
+//const aWss = expressWs.getWss('/socket');
 
 app.use(express.static(__dirname + '/public'));
 
+const clientsOnWS = [];
+
 app.ws('/socket', function(ws, req) {
   broadcast("client connected on web socket. req: "+req);
+  clientsOnWS.push(ws);
   ws.on('message', function(msg) {
 
     broadcast("message received on web socket: "+msg);
@@ -67,6 +70,7 @@ app.ws('/socket', function(ws, req) {
   });
   ws.on('close', function() {
     //ws.send(msg);
+    clientsOnWS.splice(clientsOnWS.indexOf(ws), 1);
     broadcast("client connection closed.");
   });
 });
@@ -152,9 +156,9 @@ function broadcast(message, sender) {
     client.write(message+"\r\n");
   });
 
-//  aWss.clients.forEach(function (client) {
-//    client.send(message);
-//  });
+  clientsOnWS.forEach(function (client) {
+    client.send(message);
+  });
 
   if (uplinkConnection!=null) {
     uplinkConnection.sendUTF(message);
