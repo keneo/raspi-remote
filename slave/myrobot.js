@@ -60,10 +60,6 @@ function motorStop() {
   robot.setMotor("right",0);
 }
 
-function onIdle() {
-  motorStop();
-}
-
 var stopScheduledTimeout = setTimeout(motorStop, 250)
 
 function unsheduleStop() {

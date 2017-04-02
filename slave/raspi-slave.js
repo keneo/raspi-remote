@@ -53,9 +53,6 @@ var expressWs = require('express-ws')(app);
 var aWss = expressWs.getWss('/socket');
 
 app.use(express.static(__dirname + '/public'));
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
 
 app.ws('/socket', function(ws, req) {
   broadcast("web socket created. req: "+req);
@@ -63,8 +60,10 @@ app.ws('/socket', function(ws, req) {
 
     broadcast("message received on web socket: "+msg);
 
-    var d = JSON.parse(msg);
-    myrobot.setDirection(d);
+    const cmd = JSON.parse(msg);
+    const method = cmd[0];
+    const arg = cmd[1];
+    myrobot[method](arg);
   });
   ws.on('close', function() {
     //ws.send(msg);

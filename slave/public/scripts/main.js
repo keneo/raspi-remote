@@ -16,9 +16,6 @@ var keyState = {
   'break': false,
 }
 
-var vector = {x:0, y:0};
-
-
 function buildVector(keyState) {
     var dx = 0, dy=0;
     dx+=keyState['left']?-1:0;
@@ -59,16 +56,16 @@ ws.onmessage = function (evt)
 
 ws.onclose = function()
 {
-  // websocket is closed.
   console.log("Connection closed.");
 };
 
 
 function onKeyStateChanged(newKeyState){
   //console.log(keyState);
-  vector = buildVector(newKeyState);
-  console.log(vector);
-  ws.send(JSON.stringify(vector))
+  const vector = buildVector(newKeyState);
+  const cmd = [ "setDirection", vector];
+  console.log(cmd);
+  ws.send(JSON.stringify(cmd))
 }
 
 document.onkeydown = function(e) {
