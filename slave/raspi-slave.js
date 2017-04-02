@@ -9,7 +9,7 @@ myrobot.setup();
 
 function slavesExecute(action,args) {
   //broadcast()
-  slaves.forEach(slave=>{slave.send(JSON.stringify([action,args])});
+  slaves.forEach(slave=>{slave.send(JSON.stringify([action,args]))});
   (myrobot[action])(args);
 }
 
