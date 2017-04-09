@@ -65,7 +65,7 @@ function reconnect(){
       const nice = JSON.stringify(ob,null,4);
       $("#slaveStatusPre").text(nice);
     } else {
-      log("Old message received: "+arg);
+      log("Old message received: "+received_msg);
     }
   };
 
