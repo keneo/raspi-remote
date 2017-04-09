@@ -70,11 +70,11 @@ function MyRobot() {
   }
 
   function emitStatusUpdated() {
-    that.emit("statusUpdated", this.status);
+    that.emit("statusUpdated", that.status);
   }
 
   function runSensors() {
-    this.status.sensors = this.sensorReadSync();
+    that.status.sensors = that.sensorReadSync();
     emitStatusUpdated();
   }
 
