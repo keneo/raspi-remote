@@ -118,7 +118,7 @@ if (config.remoteMasterHostAndPort != null) {
           scheduleWSCReconnect();
       });
       connection.on('close', function() {
-          broadcast('WSC echo-protocol Connection Closed');
+          broadcast('WSC Connection Closed');
           uplinkConnection = null;
           scheduleWSCReconnect();
       });
