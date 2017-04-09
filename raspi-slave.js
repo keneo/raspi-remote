@@ -156,21 +156,24 @@ function broadcast(message, sender) {
   process.stdout.write(message+"\n");
   clientsOnTelnet.forEach(function (client) {
     // Don't want to send it to sender
-    if (client === sender) return;
-    client.write(message+"\r\n");
+    if (client !== sender) {
+      client.write(message+"\r\n");
+    }
   });
 
   clientsOnWS.forEach(function (client) {
-    client.send(message);
+    if (client !== sender) {
+      client.send(message);
+    }
   });
 
-  if (uplinkConnection!=null) {
+  if (uplinkConnection !== sender && uplinkConnection!=null) {
     uplinkConnection.sendUTF(message);
   }
 }
 
-function broadcastObject(ob) {
-  broadcast("X"+JSON.stringify(ob));
+function broadcastObject(ob, sender) {
+  broadcast("X"+JSON.stringify(ob), sender);
 }
 
 myrobot.on('message',broadcast);

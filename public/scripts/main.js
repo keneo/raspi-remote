@@ -1,6 +1,6 @@
 function log(message) {
   console.log(message);
-  $('#webClientLogPre').prepend(message+"\n");
+  $('#webClientLogPre').prepend(new Date()+" "+ message+"\n");
 }
 
 log('\'Allo \'Allo!x');
@@ -47,15 +47,14 @@ var ws;
 
 function reconnect(){
   log("Connecting...");
+  $("#serverStatusPre").text("connecting...");
 
   ws = new WebSocket(buildWebSocketUriOnSameHost("/socket"));
-  //var ws = new WebSocket("ws:/socket");
 
   ws.onopen = function()
   {
-    // Web Socket is connected, send data using send()
-    //ws.send("Hello from client");
     log("Connected");
+    $("#serverStatusPre").text("connected");
   };
 
   ws.onmessage = function (evt)
@@ -72,12 +71,21 @@ function reconnect(){
 
   ws.onclose = function()
   {
+    $("#serverStatusPre").text("offline");
     log("Connection closed.");
-    reconnect();
+    scheduleReconnect();
   };
 }
 
 reconnect();
+
+var reconnectTimeout;
+function scheduleReconnect(){
+  log("Reconnect attempt in 1 sec...");
+  $("#serverStatusPre").text("Reconnect attempt in 1 sec...");
+  clearTimeout(reconnectTimeout)
+  reconnectTimeout=setTimeout(reconnect,1000);
+}
 
 function onKeyStateChanged(newKeyState){
   //console.log(keyState);

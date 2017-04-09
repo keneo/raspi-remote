@@ -9,11 +9,17 @@ function MyRobot() {
   this.setup=setup;
   //this.ledBusy=ledBusy; //
 
-  this.status = {startedOn:new Date()}
+  this.status = {
+    startedOn:new Date(),
+    sensors:null,
+    leds:[null,null],
+    motors:[0,0],
+    power:"on"
+  }
 
-  this.update=(()=>{myexit(0);});
-  this.restart=(()=>{myexit(10);});
-  this.kill=(()=>{myexit(20);});
+  this.update=(()=>{myexit(0); this.status.power="updating...";});
+  this.restart=(()=>{myexit(10); this.status.power="restarting...";});
+  this.kill=(()=>{myexit(20); this.status.power="terminating...";});
 
   this.led1_switch=led1_switch;
   this.led2_switch=led2_switch;
