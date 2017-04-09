@@ -23,8 +23,8 @@ do
 	then
 		echo "update-nothing";
 	else
-		echo "unknown exit code-sleep 1m";
-		sleep 60
+		echo "unknown exit code, possibly ctrl-C - sleep 1s";
+		sleep 1
 	fi
 
 	echo "Restart in 1 sec"

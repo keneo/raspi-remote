@@ -9,6 +9,9 @@ function MyRobot() {
   this.setup=setup;
   //this.ledBusy=ledBusy; //
 
+  robot.setup(); // Set up GPIO ports
+  ledBusy();
+
   this.status = {
     startedOn:new Date(),
     sensors:null,
@@ -52,8 +55,6 @@ var RaspiRobot = require("./raspirobot.js").RaspiRobot, // Import the library
     robot = new RaspiRobot();
 
 function setup() {
-  robot.setup(); // Set up GPIO ports
-  ledBusy();
 }
 
 function ledBusy(){
