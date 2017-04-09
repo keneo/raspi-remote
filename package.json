@@ -19,6 +19,9 @@
   "dependencies": {
     "express": "^4.15.2",
     "express-ws": "^3.0.0",
+    "i2c-bus": "^1.2.1",
+    "i2c-mpu6050": "^2.2.1",
+    "merge": "^1.2.0",
     "websocket": "^1.0.24"
   }
 }

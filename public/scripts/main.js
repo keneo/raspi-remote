@@ -38,27 +38,35 @@ function buildWebSocketUriOnSameHost(path) {
 //var ws = new WebSocket("ws://localhost:9998/socket");
 //var ws = new WebSocket("ws://192.168.3.101:3000/socket");
 //var ws = new WebSocket("ws://172.20.10.5:3000/socket");
-var ws = new WebSocket(buildWebSocketUriOnSameHost("/socket"));
-//var ws = new WebSocket("ws:/socket");
+var ws;
 
-ws.onopen = function()
-{
-  // Web Socket is connected, send data using send()
-  //ws.send("Hello from client");
-  //console.log("Message sent: Hello from client");
-};
+function reconnect(){
+  console.log("Connecting...");
 
-ws.onmessage = function (evt)
-{
-  var received_msg = evt.data;
-  console.log("Message received: "+received_msg);
-};
+  ws = new WebSocket(buildWebSocketUriOnSameHost("/socket"));
+  //var ws = new WebSocket("ws:/socket");
 
-ws.onclose = function()
-{
-  console.log("Connection closed.");
-};
+  ws.onopen = function()
+  {
+    // Web Socket is connected, send data using send()
+    //ws.send("Hello from client");
+    //console.log("Message sent: Hello from client");
+  };
 
+  ws.onmessage = function (evt)
+  {
+    var received_msg = evt.data;
+    console.log("Message received: "+received_msg);
+  };
+
+  ws.onclose = function()
+  {
+    console.log("Connection closed.");
+    reconnect();
+  };
+}
+
+reconnect();
 
 function onKeyStateChanged(newKeyState){
   //console.log(keyState);
