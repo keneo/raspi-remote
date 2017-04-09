@@ -108,17 +108,21 @@ if (config.remoteMasterHostAndPort != null) {
 
   client.on('connectFailed', function(error) {
       broadcast('WSC Connect Error: ' + error.toString());
+      broadcastObject({statusUpdate:{uplink:"connectFailed: "+error.toString()}});
       scheduleWSCReconnect();
   });
 
   client.on('connect', function(connection) {
       broadcast('WSC WebSocket Client Connected');
+      broadcastObject({statusUpdate:{uplink:"connected"}});
       connection.on('error', function(error) {
           broadcast("WSC Connection Error: " + error.toString());
+          broadcastObject({statusUpdate:{uplink:"error: "+error.toString()}});
           scheduleWSCReconnect();
       });
       connection.on('close', function() {
           broadcast('WSC Connection Closed');
+          broadcastObject({statusUpdate:{uplink:"closed"}});
           uplinkConnection = null;
           scheduleWSCReconnect();
       });
