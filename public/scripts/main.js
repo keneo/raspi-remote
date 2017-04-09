@@ -1,4 +1,9 @@
-console.log('\'Allo \'Allo!');
+function log(message) {
+  console.log(message);
+  $('#webClientLogPre').prepend(message+"\n");
+}
+
+log('\'Allo \'Allo!x');
 
 var keymap = {
   '38':'up', '87':'up',
@@ -41,7 +46,7 @@ function buildWebSocketUriOnSameHost(path) {
 var ws;
 
 function reconnect(){
-  console.log("Connecting...");
+  log("Connecting...");
 
   ws = new WebSocket(buildWebSocketUriOnSameHost("/socket"));
   //var ws = new WebSocket("ws:/socket");
@@ -50,18 +55,24 @@ function reconnect(){
   {
     // Web Socket is connected, send data using send()
     //ws.send("Hello from client");
-    console.log("Connected");
+    log("Connected");
   };
 
   ws.onmessage = function (evt)
   {
-    var received_msg = evt.data;
-    console.log("Message received: "+received_msg);
+    const received_msg = evt.data;
+    if (received_msg.startsWith("X")) {
+      const ob = JSON.parse(received_msg.substring(1));
+      const nice = JSON.stringify(ob,null,4);
+      $("#slaveStatusPre").text(nice);
+    } else {
+      log("Old message received: "+arg);
+    }
   };
 
   ws.onclose = function()
   {
-    console.log("Connection closed.");
+    log("Connection closed.");
     reconnect();
   };
 }
@@ -72,7 +83,7 @@ function onKeyStateChanged(newKeyState){
   //console.log(keyState);
   const vector = buildVector(newKeyState);
   const cmd = [ "setDirection", vector];
-  console.log(cmd);
+  log(cmd);
   ws.send(JSON.stringify(cmd))
 }
 

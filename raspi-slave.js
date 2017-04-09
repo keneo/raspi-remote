@@ -131,8 +131,8 @@ if (config.remoteMasterHostAndPort != null) {
               const arg = cmd[1];
               myrobot[method](arg);
           } else {
-            broadcast("WSC Unknown message type: "+message.type)
-            broadcast("WSC Full message dump: "+JSON.stringify(message))
+            broadcast("WSC Unknown message type: "+message.type);
+            broadcast("WSC Full message dump: "+JSON.stringify(message));
           }
       });
   });
@@ -169,4 +169,9 @@ function broadcast(message, sender) {
   }
 }
 
+function broadcastObject(ob) {
+  broadcast("X"+JSON.stringify(ob));
+}
+
 myrobot.on('message',broadcast);
+//myrobot.on('slaveStatus',)

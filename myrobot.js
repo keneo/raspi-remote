@@ -9,6 +9,8 @@ function MyRobot() {
   this.setup=setup;
   //this.ledBusy=ledBusy; //
 
+  this.status = {startedOn:new Date()}
+
   this.update=(()=>{myexit(0);});
   this.restart=(()=>{myexit(10);});
   this.kill=(()=>{myexit(20);});
