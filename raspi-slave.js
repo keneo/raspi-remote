@@ -5,8 +5,6 @@ const clientsOnTelnet = [];
 const MyRobot = require("./myrobot.js"),
       myrobot = new MyRobot();
 
-myrobot.setup();
-
 function slavesExecute(action,args) {
   //broadcast()
   slaves.forEach(slave=>{slave.send(JSON.stringify([action,args]))});
@@ -181,4 +179,4 @@ function broadcastObject(ob, sender) {
 }
 
 myrobot.on('message',broadcast);
-//myrobot.on('slaveStatus',)
+myrobot.on('statusUpdated',status=>{broadcastObject({statusUpdate:{slave:status}});})

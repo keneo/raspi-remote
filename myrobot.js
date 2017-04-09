@@ -6,7 +6,6 @@ module.exports = MyRobot;
 function MyRobot() {
   EventEmitter.call(this);
   const that = this;
-  this.setup=setup;
   //this.ledBusy=ledBusy; //
 
   robot.setup(); // Set up GPIO ports
@@ -14,7 +13,7 @@ function MyRobot() {
 
   this.status = {
     startedOn:new Date(),
-    sensors:null,
+    //sensors:null,
     leds:[null,null],
     motors:[0,0],
     power:"on"
@@ -44,6 +43,44 @@ function MyRobot() {
       //process.stdout.write(message+"\n");
       that.emit('message', message);
   }
+
+  function sensorOrNull() {
+    try {
+      var i2c = require('i2c-bus');
+      var MPU6050 = require('i2c-mpu6050');
+
+      var address = 0x68;
+      var i2c1 = i2c.openSync(1);
+
+      var sensor = new MPU6050(i2c1, address);
+      return sensor;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  const sensor = sensorOrNull();
+
+  this.sensorReadSync = function() {
+    if (sensor!=null) {
+      return sensor.readSync();
+    } else {
+      return null;
+    }
+  }
+
+  function emitStatusUpdated() {
+    that.emit("statusUpdated", this.status);
+  }
+
+  function runSensors() {
+    this.status.sensors = this.sensorReadSync();
+    emitStatusUpdated();
+  }
+
+  if (sensor!=null) {
+    setInterval(runSensors, 500);
+  }
 }
 
 util.inherits(MyRobot, EventEmitter);
@@ -53,9 +90,6 @@ util.inherits(MyRobot, EventEmitter);
 
 var RaspiRobot = require("./raspirobot.js").RaspiRobot, // Import the library
     robot = new RaspiRobot();
-
-function setup() {
-}
 
 function ledBusy(){
     robot.setLED(1, 1); // Turn on LED 1
