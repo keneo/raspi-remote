@@ -50,7 +50,7 @@ function reconnect(){
   {
     // Web Socket is connected, send data using send()
     //ws.send("Hello from client");
-    //console.log("Message sent: Hello from client");
+    console.log("Connected");
   };
 
   ws.onmessage = function (evt)
