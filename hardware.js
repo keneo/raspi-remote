@@ -92,6 +92,11 @@ function Hardware() {
     }
   }
 
+  this._enableSensorsStreaming=false;
+  function enableSensorsStreaming(enable) {
+    this._enableSensorsStreaming=enable;
+  }
+
   function emitStatusUpdated() {
     that.emit("statusUpdated", that.status);
   }
@@ -101,8 +106,14 @@ function Hardware() {
     emitStatusUpdated();
   }
 
+  function streamSensorsIfEnabled() {
+    if (this._enableSensorsStreaming) {
+      runSensors();
+    }
+  }
+
   if (sensor!=null) {
-    setInterval(runSensors, 500);
+    setInterval(streamSensorsIfEnabled, 500);
   }
 }
 
