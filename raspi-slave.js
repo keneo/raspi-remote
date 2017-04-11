@@ -2,7 +2,7 @@ const net = require('net');
 
 const clientsOnTelnet = [];
 
-const MyRobot = require("./myrobot.js"),
+const MyRobot = require("./hardware.js"),
       myrobot = new MyRobot();
 
 function slavesExecute(action,args) {
