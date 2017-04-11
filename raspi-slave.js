@@ -1,14 +1,14 @@
-hardwareconst net = require('net');
+const net = require('net');
 
 const clientsOnTelnet = [];
 
-const Hardware = require("./hardware.js"),
-      hardware = new Hardware();
+const MyRobot = require("./myrobot.js"),
+      myrobot = new MyRobot();
 
 function slavesExecute(action,args) {
   //broadcast()
   slaves.forEach(slave=>{slave.send(JSON.stringify([action,args]))});
-  (hardware[action])(args);
+  (myrobot[action])(args);
 }
 
 net.createServer(function (socket) {
@@ -131,7 +131,7 @@ if (config.remoteMasterHostAndPort != null) {
               const cmd = JSON.parse(message.utf8Data);
               const method = cmd[0];
               const arg = cmd[1];
-              hardware[method](arg);
+              myrobot[method](arg);
           } else {
             broadcast("WSC Unknown message type: "+message.type);
             broadcast("WSC Full message dump: "+JSON.stringify(message));
@@ -178,5 +178,5 @@ function broadcastObject(ob, sender) {
   broadcast("X"+JSON.stringify(ob), sender);
 }
 
-hardware.on('message',broadcast);
-hardware.on('statusUpdated',status=>{broadcastObject({statusUpdate:{slave:status}});})
+myrobot.on('message',broadcast);
+myrobot.on('statusUpdated',status=>{broadcastObject({statusUpdate:{slave:status}});})
