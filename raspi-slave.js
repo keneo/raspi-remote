@@ -178,5 +178,9 @@ function broadcastObject(ob, sender) {
   broadcast("X"+JSON.stringify(ob), sender);
 }
 
+//const channelClients
+//function broadcastToSubscribed(channelName,frame) {
+//}
+
 hardware.on('message',broadcast);
 hardware.on('statusUpdated',status=>{broadcastObject({statusUpdate:{slave:status}});})
