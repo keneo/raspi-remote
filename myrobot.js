@@ -19,18 +19,41 @@ function MyRobot() {
     power:"on"
   }
 
-  this.update=(()=>{myexit(0); this.status.power="updating...";});
-  this.restart=(()=>{myexit(10); this.status.power="restarting...";});
-  this.kill=(()=>{myexit(20); this.status.power="terminating...";});
+  update(){myexit(0); this.status.power="updating...";};
+  restart()){myexit(10); this.status.power="restarting...";};
+  kill(){myexit(20); this.status.power="terminating...";};
 
-  this.led1_switch=led1_switch;
-  this.led2_switch=led2_switch;
-  this.forward=forward;
-  this.backwards=backwards;
-  this.stop=stop;
-  this.left=left;
-  this.right=right;
-  this.setDirection=setDirection;
+
+  led1_switch() { robot.setLED(1,(robot.getLED(1)?0:1)); }
+  led2_switch() { robot.setLED(2,(robot.getLED(2)?0:1)); }
+  forward() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",1); resheduleStop(); }
+  backwards() { ledBusy(); robot.setMotor("left",1,1); robot.setMotor("right",1,1); resheduleStop(); }
+  stop() { motorStop(); unsheduleStop();}
+  left() { ledBusy(); robot.setMotor("left",0); robot.setMotor("right",1); resheduleStop(); }
+  right() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",0); resheduleStop(); }
+
+  setDirection(d) { //x,y
+    if (d.x==0){
+      //prosto
+      if (d.y==0) {
+        motorStop();
+      } else {
+        var reverse = d.y>0?0:1;
+        ledBusy(); robot.setMotor("left",1,reverse); robot.setMotor("right",1,reverse);
+      }
+    } else {
+      //skrecamy
+      ledBusy();
+      if (d.y==0) {
+        //w miejscu
+        robot.setMotor("left",1,d.x<0?1:0); robot.setMotor("right",1,d.x>0?1:0);
+      } else {
+        //w ruchu
+        var dir = d.y==1?0:1;
+        robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir);
+      }
+    }
+  }
 
   function myexit(code) {
       robot.setLED(1, 1);
@@ -112,35 +135,4 @@ function unsheduleStop() {
 function resheduleStop() {
     unsheduleStop();
     stopScheduledTimeout = setTimeout(motorStop, 250);
-}
-
-function led1_switch() { robot.setLED(1,(robot.getLED(1)?0:1)); }
-function led2_switch() { robot.setLED(2,(robot.getLED(2)?0:1)); }
-function forward() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",1); resheduleStop(); }
-function backwards() { ledBusy(); robot.setMotor("left",1,1); robot.setMotor("right",1,1); resheduleStop(); }
-function stop() { motorStop(); unsheduleStop();}
-function left() { ledBusy(); robot.setMotor("left",0); robot.setMotor("right",1); resheduleStop(); }
-function right() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",0); resheduleStop(); }
-
-function setDirection(d) { //x,y
-  if (d.x==0){
-    //prosto
-    if (d.y==0) {
-      motorStop();
-    } else {
-      var reverse = d.y>0?0:1;
-      ledBusy(); robot.setMotor("left",1,reverse); robot.setMotor("right",1,reverse);
-    }
-  } else {
-    //skrecamy
-    ledBusy();
-    if (d.y==0) {
-      //w miejscu
-      robot.setMotor("left",1,d.x<0?1:0); robot.setMotor("right",1,d.x>0?1:0);
-    } else {
-      //w ruchu
-      var dir = d.y==1?0:1;
-      robot.setMotor("left",d.x==d.y?1:0,dir); robot.setMotor("right",d.x!=d.y?1:0,dir);
-    }
-  }
 }
