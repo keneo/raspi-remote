@@ -1,9 +1,9 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
-module.exports = MyRobot;
+module.exports = Hardware;
 
-function MyRobot() {
+function Hardware() {
   EventEmitter.call(this);
   const that = this;
   //this.ledBusy=ledBusy; //
