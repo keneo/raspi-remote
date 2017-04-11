@@ -19,20 +19,20 @@ function MyRobot() {
     power:"on"
   }
 
-  update(){myexit(0); this.status.power="updating...";};
-  restart()){myexit(10); this.status.power="restarting...";};
-  kill(){myexit(20); this.status.power="terminating...";};
+  this.update=()=>{myexit(0); this.status.power="updating...";};
+  this.restart=()=>{myexit(10); this.status.power="restarting...";};
+  this.kill=()=>{myexit(20); this.status.power="terminating...";};
 
 
-  led1_switch() { robot.setLED(1,(robot.getLED(1)?0:1)); }
-  led2_switch() { robot.setLED(2,(robot.getLED(2)?0:1)); }
-  forward() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",1); resheduleStop(); }
-  backwards() { ledBusy(); robot.setMotor("left",1,1); robot.setMotor("right",1,1); resheduleStop(); }
-  stop() { motorStop(); unsheduleStop();}
-  left() { ledBusy(); robot.setMotor("left",0); robot.setMotor("right",1); resheduleStop(); }
-  right() { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",0); resheduleStop(); }
+  this.led1_switch=()=> { robot.setLED(1,(robot.getLED(1)?0:1)); }
+  this.led2_switch=()=> { robot.setLED(2,(robot.getLED(2)?0:1)); }
+  this.forward=()=> { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",1); resheduleStop(); }
+  this.backwards=()=> { ledBusy(); robot.setMotor("left",1,1); robot.setMotor("right",1,1); resheduleStop(); }
+  this.stop=()=> { motorStop(); unsheduleStop();}
+  this.left=()=> { ledBusy(); robot.setMotor("left",0); robot.setMotor("right",1); resheduleStop(); }
+  this.right=()=> { ledBusy(); robot.setMotor("left",1); robot.setMotor("right",0); resheduleStop(); }
 
-  setDirection(d) { //x,y
+  this.setDirection=(d)=> { //x,y
     if (d.x==0){
       //prosto
       if (d.y==0) {
