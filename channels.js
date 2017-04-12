@@ -5,6 +5,7 @@ class Channels extends EventEmitter {
   constructor() {
     super();
     this.channelsToClients = {};
+    this.channelsToClientsIds = {};
     this.clientsToChannels = {};
     this.clientById = {};
   }
@@ -13,8 +14,8 @@ class Channels extends EventEmitter {
     const allHisChannels = findOrCreate(this.clientsToChannels,clientId);
     delete this.clientsToChannels[clientId];
     allHisChannels.forEach(chName=>{
-      const ch = this.channelsToClients[chName];
-      remove(ch,clientId);
+      const ch = this.channelsToClientsIds[chName];
+      remove(ch,clientId,this.channelsToClients[chName]);
       if (ch.length==0) {
         this.onChannelActivityChanged(chName,false);
       }
@@ -26,15 +27,17 @@ class Channels extends EventEmitter {
     if (allHisChannels.length==0) {
       this.clientById.remove(clientId);
     }
-    const channelClients = this.channelsToClients[channelName];
-    remove(channelClients,clientId);
+    const channelClients = this.channelsToClientsIds[channelName];
+    remove(channelClients,clientId,this.channelsToClients[channelName]);
     if (channelClients.length==0) {
       this.onChannelActivityChanged(channelName,false);
     }
   };
   subscribeClient(clientId,client,channelName){
-    const ch = findOrCreate(this.channelsToClients,channelName);
+    const ch = findOrCreate(this.channelsToClientsIds,channelName);
     ch.push(clientId);
+    findOrCreate(this.channelsToClients,channelName).push(client);
+
     findOrCreate(this.clientsToChannels,clientId).push(channelName);
     this.clientById[clientId]=client;
     if (ch.length==1) {
@@ -43,6 +46,9 @@ class Channels extends EventEmitter {
   };
   getAllClientsSubscribed(channelName){
     return findOrCreate(this.channelsToClients, channelName);
+  };
+  getAllClientsIdsSubscribed(channelName){
+    return findOrCreate(this.channelsToClientsIds, channelName);
   };
   channelIsActive(channelName) {
     return this.getAllClientsSubscribed(channelName).length>0;
@@ -65,10 +71,13 @@ function findOrCreate(dict,key) {
   }
 }
 
-function remove(array,element) {
+function remove(array,element,secondaryArray) {
   const index = array.indexOf(element);
   if (index > -1) {
     array.splice(index, 1);
+    if (secondaryArray!==undefined) {
+      secondaryArray.splice(index, 1);
+    }
   } else {
     throw "not found "+element;
   }

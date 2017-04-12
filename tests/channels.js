@@ -5,8 +5,10 @@ var Channels = require('./../channels');
 describe('Channels', function() {
   it('should allow subscribe and unsubscribe from channel', function() {
     var channels = new Channels();
-    channels.subscribeClient("ala","ala","ch1");
-    expect(channels.getAllClientsSubscribed("ch1")[0]).to.equal("ala");
+    var ala = {name:"ala"};
+    channels.subscribeClient("ala",ala,"ch1");
+    expect(channels.getAllClientsSubscribed("ch1")[0]).to.equal(ala);
+    expect(channels.getAllClientsIdsSubscribed("ch1")[0]).to.equal("ala");
   });
 
   it('should allow unsubscribe client from all channels in 1 shot', function() {
@@ -30,7 +32,7 @@ describe('Channels', function() {
     channels.unsubscribeClientFromChannel("ala","ch1");
     expect(channels.getAllClientsSubscribed("ch1").length).to.equal(0);
     expect(channels.getAllClientsSubscribed("ch2").length).to.equal(1);
-    expect(channels.getAllClientsSubscribed("ch2")[0]).to.equal("ala");
+    expect(channels.getAllClientsIdsSubscribed("ch2")[0]).to.equal("ala");
   });
 
 });
