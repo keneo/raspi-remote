@@ -1,5 +1,9 @@
-class Channels {
+
+const EventEmitter = require('events');
+
+class Channels extends EventEmitter {
   constructor() {
+    super();
     this.channelsToClients = {};
     this.clientsToChannels = {};
     this.clientById = {};
@@ -38,9 +42,14 @@ class Channels {
     }
   };
   getAllClientsSubscribed(channelName){
-    return findOrCreate(this.channelsToClients,channelName);
+    return findOrCreate(this.channelsToClients, channelName);
   };
-  onChannelActivityChanged(channelName, active){}
+  channelIsActive(channelName) {
+    return this.getAllClientsSubscribed(channelName).length>0;
+  }
+  onChannelActivityChanged(channelName, active){
+    this.emit(channelName+"-"+(active?"activated":"deactivated"))
+  }
 };
 
 module.exports = Channels;

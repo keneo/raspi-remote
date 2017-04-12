@@ -15,7 +15,11 @@ describe('Channels', function() {
     channels.subscribeClient("ala","ala","ch2");
     channels.unsubscribeClientFromAll("ala");
     expect(channels.getAllClientsSubscribed("ch1").length).to.equal(0);
+    expect(channels.channelIsActive("ch1")).to.equal(false);
+
     expect(channels.getAllClientsSubscribed("ch2").length).to.equal(0);
+    expect(channels.channelIsActive("ch2")).to.equal(false);
+
   });
 
 
