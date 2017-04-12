@@ -23,5 +23,8 @@
     "i2c-mpu6050": "^2.2.1",
     "merge": "^1.2.0",
     "websocket": "^1.0.24"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }
