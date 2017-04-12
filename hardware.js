@@ -3,10 +3,37 @@ var EventEmitter = require('events').EventEmitter;
 
 module.exports = Hardware;
 
+
 function Hardware() {
   EventEmitter.call(this);
   const that = this;
   //this.ledBusy=ledBusy; //
+
+  var RaspiRobot = require("./raspirobot.js").RaspiRobot, // Import the library
+      robot = new RaspiRobot();
+
+  function ledBusy(){
+      robot.setLED(1, 1); // Turn on LED 1
+      robot.setLED(2, 0); // Turn off LED 2
+  }
+
+  function motorStop() {
+    robot.setLED(1,0);
+    robot.setLED(2,1);
+    robot.setMotor("left",0);
+    robot.setMotor("right",0);
+  }
+
+  var stopScheduledTimeout = setTimeout(motorStop, 250)
+
+  function unsheduleStop() {
+    clearTimeout(stopScheduledTimeout);
+  }
+
+  function resheduleStop() {
+      unsheduleStop();
+      stopScheduledTimeout = setTimeout(motorStop, 250);
+  }
 
   robot.setup(); // Set up GPIO ports
   ledBusy();
@@ -121,29 +148,3 @@ util.inherits(Hardware, EventEmitter);
 
 //var util = require('util');
 //var EventEmitter = require('events').EventEmitter;
-
-var RaspiRobot = require("./raspirobot.js").RaspiRobot, // Import the library
-    robot = new RaspiRobot();
-
-function ledBusy(){
-    robot.setLED(1, 1); // Turn on LED 1
-    robot.setLED(2, 0); // Turn off LED 2
-}
-
-function motorStop() {
-  robot.setLED(1,0);
-  robot.setLED(2,1);
-  robot.setMotor("left",0);
-  robot.setMotor("right",0);
-}
-
-var stopScheduledTimeout = setTimeout(motorStop, 250)
-
-function unsheduleStop() {
-  clearTimeout(stopScheduledTimeout);
-}
-
-function resheduleStop() {
-    unsheduleStop();
-    stopScheduledTimeout = setTimeout(motorStop, 250);
-}
