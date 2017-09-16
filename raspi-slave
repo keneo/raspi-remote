@@ -23,7 +23,7 @@ do
 	then
 		echo "update-nothing";
 	else
-		echo "unknown exit code, possibly ctrl-C - sleep 1s";
+		echo "unknown exit code ${code}, possibly ctrl-C - sleep 1s";
 		sleep 1
 	fi
 
