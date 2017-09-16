@@ -5,25 +5,36 @@ do
 	#mv raspi-slave.js raspi-slave.js.prev ; \
 	#	wget https://raw.githubusercontent.com/keneo/raspi-remote/master/slave/raspi-slave.js || mv raspi-slave.js.prev raspi-slave.js && \
 
+	echo "git pull..."
 	git pull
+	echo "npm install..."
 	npm install
+	echo "sudo node raspi-slave.js..."
 	sudo node raspi-slave.js
 
 	code=$?
 
 	if [ $code -eq 10 ]
 	then
-		echo reboot;
+		echo "reboot";
 		reboot
 	elif [ $code -eq 20 ]
 	then
 		echo "kill-exit";
 		exit
+	elif [ $code -eq 130 ]
+	then
+		echo "ctrl-C hit or similar. exiting...";
+		exit
+	elif [ $code -eq 143 ]
+	then
+		echo "killed like by the default kill command. exiting...";
+		exit
 	elif [ $code -eq 0 ]
 	then
 		echo "update-nothing";
 	else
-		echo "unknown exit code ${code}, possibly ctrl-C - sleep 1s";
+		echo "unknown exit code ${code} - sleep 1s and restart";
 		sleep 1
 	fi
 
