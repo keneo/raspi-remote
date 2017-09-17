@@ -8,7 +8,7 @@ do
 	echo "git pull..."
 	git pull
 	echo "npm install..."
-	npm install
+	npm install --unsafe-perm
 	echo "sudo node raspi-slave.js..."
 	sudo node raspi-slave.js
 
