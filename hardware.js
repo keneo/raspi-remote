@@ -103,8 +103,10 @@ function Hardware() {
       var i2c1 = i2c.openSync(1);
 
       var sensor = new MPU6050(i2c1, address);
+      broadcast("sensor created");
       return sensor;
     } catch (e) {
+      broadcast("sensor creation failed: "+e);
       return null;
     }
   }
