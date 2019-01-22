@@ -119,7 +119,7 @@ function Hardware() {
     }
   }
 
-  this._enableSensorsStreaming=false;
+  this._enableSensorsStreaming=true;
   function enableSensorsStreaming(enable) {
     this._enableSensorsStreaming=enable;
   }
@@ -140,7 +140,7 @@ function Hardware() {
   }
 
   if (sensor!=null) {
-    setInterval(streamSensorsIfEnabled, 500);
+    setInterval(streamSensorsIfEnabled, 2000);
   }
 }
 
